@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useAuthStore } from "../store/store";
 import { router } from "../router";
 import Navigation from "./Navigation.vue";
@@ -7,6 +7,12 @@ import Navigation from "./Navigation.vue";
 const email = ref("");
 const password = ref("");
 const $store = useAuthStore();
+
+onMounted(() => {
+  if($store.currentUser) {
+    router.push({path : 'dashboard'})
+  }
+})
 
 const login = () => {
   if (email.value && password.value) {

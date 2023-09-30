@@ -1,26 +1,40 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useAuthStore } from "../store/store";
 import Navigation from "./Navigation.vue";
 import { RouterLink } from "vue-router";
+import { router } from "../router";
 
+const username = ref("");
 const email = ref("");
 const password = ref("");
 const confirmPassword = ref("");
 const store = useAuthStore();
 
+onMounted(() => {
+  if (store.currentUser) {
+    router.push({ path: "dashboard" });
+  }
+});
+
 const register = () => {
   if (
+    username.value &&
     email.value &&
     password.value &&
     password.value === confirmPassword.value
   ) {
-    store.registerUser({ email: email.value, password: password.value });
+    store.registerUser({
+      username: username,
+      email: email.value,
+      password: password.value,
+    });
     // Redirect to login page or dashboard
     alert("Registration Successful! Please login ");
-    email.value = ''
-    password.value = ''
-    confirmPassword.value = ''
+    email.value = "";
+    password.value = "";
+    confirmPassword.value = "";
+    username.value = "";
   } else {
     alert("Invalid registration data");
   }
@@ -28,7 +42,7 @@ const register = () => {
 </script>
 
 <template>
-  <Navigation/>
+  <Navigation />
   <div
     class="min-h-screen flex flex-col items-center justify-center bg-gray-100 pt-[75px]"
   >
@@ -56,9 +70,10 @@ const register = () => {
               </div>
 
               <input
-                id="email"
-                type="email"
-                name="email"
+                id="username"
+                type="text"
+                name="username"
+                v-model="username"
                 class="text-sm placeholder-gray-500 pl-10 pr-4 rounded-2xl border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400"
                 placeholder="Enter your name"
               />
